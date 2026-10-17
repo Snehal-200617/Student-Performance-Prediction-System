@@ -551,6 +551,5 @@ elif section == "Model results":
     st.subheader("What I learned")
 
     st.write(
-        "Describe what you learned about the dataset, model evaluation, "
-        "and the limitations of predicting student grades."
+        "This project helped me understand how machine learning can be used to solve real-world problems in education. It shows how student data can help predict academic performance and identify areas where students may need extra support. Overall, the project aims to make learning more informed, supportive, and effective."
     )
