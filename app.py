@@ -593,7 +593,5 @@ elif section == "Model results":
     st.subheader("What I learned")
 
     st.write(
-        "Write this part in your own words before showing the project. For example, "
-        "describe one thing you learned about the dataset, one thing you learned "
-        "about model evaluation, and one limitation of your prediction."
+        "This project helped me understand how machine learning can be used to solve real-world problems in education. It shows how student data can help predict academic performance and identify areas where students may need extra support. Overall, the project aims to make learning more informed, supportive, and effective.."
     )
