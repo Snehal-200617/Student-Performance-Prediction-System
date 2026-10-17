@@ -82,20 +82,17 @@ axes[1, 1].set_title("G2 vs Final Grade")
 axes[1, 1].set_xlabel("G2")
 axes[1, 1].set_ylabel("G3")
 
-#  spacing and display all four charts.
+#  display all four charts with proper spacing
 plt.tight_layout()
 plt.show()
 
 # Inputs the model will use to predict the final grade.
 feature_columns = ["studytime", "absences", "G1", "G2"]
 
-# The value the model will learn to predict.
 target_column = "G3"
 
-# X conventionally means the input features.
 X = students[feature_columns]
 
-# y conventionally means the target (answer).
 y = students[target_column]
 
 print("\nInput columns:", X.columns.tolist())

@@ -9,15 +9,11 @@ import streamlit as st
 # 1. Find the project files
 # ----------------------------
 
-# This points to the folder containing app.py.
 PROJECT_FOLDER = Path(__file__).resolve().parent
 
-# These paths assume the CSV is inside the "data" folder
-# and the saved model is beside app.py.
 DATA_PATH = PROJECT_FOLDER / "data" / "student-mat.csv"
 MODEL_PATH = PROJECT_FOLDER / "student_grade_model.joblib"
 
-# These are the columns the saved model expects.
 INPUT_COLUMNS = ["studytime", "absences", "G1", "G2"]
 TARGET_COLUMN = "G3"
 
@@ -32,6 +28,160 @@ st.set_page_config(
     layout="wide",
 )
 
+# ----------------------------
+# 3. Professional lavender theme
+# ----------------------------
+
+st.markdown(
+    """
+    <style>
+    /* Main application background */
+    .stApp {
+        background-color: #F7F5FC;
+        color: #302746;
+    }
+
+    /* Main content area */
+    [data-testid="stMain"] {
+        background-color: #F7F5FC;
+    }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background-color: #EDE7F8;
+        border-right: 1px solid #DED4F0;
+    }
+
+    /* Main headings */
+    h1, h2, h3 {
+        color: #594080 !important;
+    }
+
+    /* General text */
+    .stApp p,
+    .stApp label,
+    .stApp .stMarkdown {
+        color: #302746;
+    }
+
+    /* Sidebar text */
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] label {
+        color: #44345F;
+    }
+
+    /* Buttons */
+    .stButton > button,
+    .stFormSubmitButton > button {
+        background-color: #8064B5;
+        color: #FFFFFF;
+        border: 1px solid #8064B5;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+
+    /* Button hover */
+    .stButton > button:hover,
+    .stFormSubmitButton > button:hover {
+        background-color: #6B4E9C;
+        color: #FFFFFF;
+        border-color: #6B4E9C;
+    }
+
+    /* Keyboard focus */
+    .stButton > button:focus,
+    .stFormSubmitButton > button:focus {
+        color: #FFFFFF;
+        border-color: #594080;
+        box-shadow: 0 0 0 2px #D7C8F0;
+    }
+
+    /* Metric cards */
+    [data-testid="stMetric"] {
+        background-color: #FFFFFF;
+        border: 1px solid #E5DDF2;
+        border-radius: 12px;
+        padding: 18px;
+    }
+
+    /* Metric labels */
+    [data-testid="stMetricLabel"] {
+        color: #66577D;
+    }
+
+    /* Metric values */
+    [data-testid="stMetricValue"] {
+        color: #594080;
+    }
+
+    /* Input fields */
+    .stNumberInput input {
+        background-color: #FFFFFF;
+        color: #302746;
+        border-radius: 8px;
+    }
+
+    /* Select boxes */
+    [data-baseweb="select"] > div {
+        background-color: #FFFFFF;
+        border-color: #D9CEE9;
+        border-radius: 8px;
+    }
+
+    /* Expanders */
+    [data-testid="stExpander"] {
+        background-color: #FFFFFF;
+        border: 1px solid #E5DDF2;
+        border-radius: 10px;
+    }
+
+    /* Expandable section headings */
+    [data-testid="stExpander"] summary {
+        color: #594080;
+    }
+
+    /* Information and status messages */
+    [data-testid="stAlert"] {
+        border-radius: 10px;
+    }
+
+    /* Data tables */
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"] {
+        border: 1px solid #E5DDF2;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* Form containers */
+    [data-testid="stForm"] {
+        background-color: #FCFAFF;
+        border: 1px solid #E5DDF2;
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    /* Progress bar */
+    .stProgress > div > div > div {
+        background-color: #8064B5;
+    }
+
+    /* Sidebar radio selection */
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {
+        color: #44345F;
+    }
+
+    /* Horizontal separators */
+    hr {
+        border-color: #E1D7EF;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("📚 Student Performance Prediction")
 st.write(
     "This project explores student grade data and uses a machine-learning "
@@ -40,7 +190,7 @@ st.write(
 
 
 # ----------------------------
-# 3. Load the CSV and model
+# 4. Load the CSV and model
 # ----------------------------
 
 @st.cache_data
@@ -55,7 +205,6 @@ def load_model(file_path):
     return joblib.load(file_path)
 
 
-# Show a clear message if either project file is missing.
 if not DATA_PATH.exists():
     st.error(
         f"Could not find the dataset here:\n\n{DATA_PATH}\n\n"
@@ -73,9 +222,10 @@ if not MODEL_PATH.exists():
 data = load_dataset(DATA_PATH)
 model = load_model(MODEL_PATH)
 
-# Check that the dataset has all the columns needed by this app.
 needed_columns = INPUT_COLUMNS + [TARGET_COLUMN]
-missing_columns = [column for column in needed_columns if column not in data.columns]
+missing_columns = [
+    column for column in needed_columns if column not in data.columns
+]
 
 if missing_columns:
     st.error(f"The CSV is missing these required columns: {missing_columns}")
@@ -83,7 +233,7 @@ if missing_columns:
 
 
 # ----------------------------
-# 4. Navigation
+# 5. Navigation
 # ----------------------------
 
 section = st.sidebar.radio(
@@ -100,7 +250,7 @@ st.sidebar.caption("Dataset: UCI Student Performance — Mathematics")
 
 
 # ----------------------------
-# 5. Overview section
+# 6. Overview section
 # ----------------------------
 
 if section == "Overview":
@@ -118,7 +268,6 @@ if section == "Overview":
         "and **G2** as its inputs."
     )
 
-    # Show a few basic facts about the data.
     first, second, third = st.columns(3)
 
     with first:
@@ -128,7 +277,10 @@ if section == "Overview":
         st.metric("Dataset columns", len(data.columns))
 
     with third:
-        st.metric("Average final grade", f"{data[TARGET_COLUMN].mean():.1f} / 20")
+        st.metric(
+            "Average final grade",
+            f"{data[TARGET_COLUMN].mean():.1f} / 20",
+        )
 
     st.subheader("What the input columns mean")
 
@@ -154,7 +306,7 @@ if section == "Overview":
 
 
 # ----------------------------
-# 6. Explore the data section
+# 7. Explore the data section
 # ----------------------------
 
 elif section == "Explore the data":
@@ -165,13 +317,14 @@ elif section == "Explore the data":
         "relationship does not prove that one factor causes another."
     )
 
-    # Grade counts: how many students received each final grade?
     st.subheader("How final grades are distributed")
     grade_counts = data[TARGET_COLUMN].value_counts().sort_index()
     st.bar_chart(grade_counts)
-    st.caption("Each bar shows the number of students who received that G3 grade.")
 
-    # Average final grade for each study-time category.
+    st.caption(
+        "Each bar shows the number of students who received that G3 grade."
+    )
+
     st.subheader("Average final grade by study-time category")
     average_by_study_time = (
         data.groupby("studytime")[TARGET_COLUMN]
@@ -179,12 +332,12 @@ elif section == "Explore the data":
         .rename("Average G3")
     )
     st.bar_chart(average_by_study_time)
+
     st.caption(
         "Study-time categories are coded 1–4. This chart compares group averages; "
         "it does not show that study time alone caused the grades."
     )
 
-    # Compare earlier grades with the final grade.
     left_chart, right_chart = st.columns(2)
 
     with left_chart:
@@ -197,20 +350,23 @@ elif section == "Explore the data":
         st.scatter_chart(data, x="G2", y="G3")
         st.caption("Each point represents one student.")
 
-    # Let the student look at the actual dataset rows.
     with st.expander("Show a sample of the dataset"):
         st.dataframe(data.head(10), use_container_width=True)
 
     with st.expander("Show summary statistics"):
-        st.dataframe(data.describe(include="all").T, use_container_width=True)
+        st.dataframe(
+            data.describe(include="all").T,
+            use_container_width=True,
+        )
 
 
 # ----------------------------
-# 7. Make a prediction section
+# 8. Make a prediction section
 # ----------------------------
 
 elif section == "Make a prediction":
     st.header("Prediction lab")
+
     st.write(
         "Build a student profile using the four details the model was trained "
         "to use. Submit the profile to see an estimated final grade."
@@ -222,14 +378,16 @@ elif section == "Make a prediction":
         st.subheader("Student profile")
 
         study_time_labels = {
-            1: "Under 2 hours per week",
-            2: "2–5 hours per week",
-            3: "5–10 hours per week",
-            4: "Over 10 hours per week",
+            1: "1",
+            2: "2",
+            3: "3",
+            4: "4",
+            5: "5",
+            6: "6",
+            7: "7",
+            8: "8",
         }
 
-        # A form waits for submission, so changing an input alone
-        # does not immediately run a prediction.
         with st.form("student_profile_form"):
             studytime = st.selectbox(
                 "Weekly study time",
@@ -305,7 +463,6 @@ elif section == "Make a prediction":
                 value=f"{estimate:.1f} / 20",
             )
 
-            # A progress bar shows the estimate's position on the 0–20 scale.
             st.progress(estimate / 20)
 
             st.caption("Position of the estimate on the 0–20 grade scale")
@@ -333,6 +490,7 @@ elif section == "Make a prediction":
                         "G2": "Second-period grade (G2)",
                     }
                 )
+
                 st.dataframe(
                     readable_profile,
                     hide_index=True,
@@ -360,8 +518,10 @@ elif section == "Make a prediction":
                 - G2, the second-period grade
                 """
             )
+
+
 # ----------------------------
-# 8. Model results section
+# 9. Model results section
 # ----------------------------
 
 elif section == "Model results":
@@ -373,7 +533,6 @@ elif section == "Model results":
         "did not train on."
     )
 
-    # These are the scores from your earlier evaluation.
     results = pd.DataFrame(
         {
             "Model": [
@@ -394,7 +553,11 @@ elif section == "Model results":
         }
     )
 
-    st.dataframe(results, hide_index=True, use_container_width=True)
+    st.dataframe(
+        results,
+        hide_index=True,
+        use_container_width=True,
+    )
 
     st.subheader("How to read these scores")
 
